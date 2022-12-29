@@ -16,6 +16,7 @@ def logout():
     add.apply_async(args=(1, 2))
     return "Logout"
 
+
 @app.route("/register", methods=['GET', 'POST'])
 def register():
     return "OK"
@@ -45,8 +46,6 @@ def currency_converter():
 
         cur_exchange_buy = float(buy_rate_2) / float(buy_rate_1)
         cur_exchange_sale = float(sale_rate_2) / float(sale_rate_1)
-
-
 
         return render_template('data_form.html',
                                cur_excange_buy=cur_exchange_buy,
