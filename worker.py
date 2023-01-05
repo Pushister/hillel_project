@@ -1,14 +1,15 @@
+import os
 from celery import Celery
 import datetime
 
 
-app = Celery('worker', broker='pyamqp://guest@localhost//')
+rabbit_host = os.environ.get('RABBIT_HOST', 'localhost')
+app = Celery('worker', broker='pyamqp://guest@rabbitmq_container//')
 
 
 @app.on_after_configure.connect
 def setup_periodic_tasks(sender, **kwargs):
-    # Calls test('hello') every 10 seconds.
-    sender.add_periodic_task(86400.0, add.s(x = 2,  y = 4), name='add every day')
+    sender.add_periodic_task(10.0, add.s(x = 2,  y = 4), name='10 seconds')
 
 
 @app.task
