@@ -1,0 +1,36 @@
+version: "3.9"
+services:
+  web:
+    build: .
+    ports:
+      - "8000:5001"
+    depends_on:
+      - rabbitmq_container
+    command: python3 flask_start.py
+    environment:
+      - RABBIT_HOST=rabbitmq_container
+
+  rabbitmq_container:
+    image: "rabbitmq:3.8.9-management"
+    ports:
+      # - "5672:5672"
+      - "15672:15672"
+    hostname: rabbitmq_container
+
+  celery:
+    build: .
+    command: celery -A worker worker --loglevel info --pool=solo
+    depends_on:
+        - rabbitmq_container
+    environment:
+      - RABBIT_HOST=rabbitmq_container
+
+  celery_periodical:
+    build: .
+    command: celery -A worker beat --loglevel info
+    depends_on:
+      - rabbitmq_container
+    environment:
+      - RABBIT_HOST=rabbitmq_container
+
+#docker-compose up -d
