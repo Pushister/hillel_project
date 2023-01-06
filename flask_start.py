@@ -2,12 +2,24 @@ from flask import Flask
 from flask import request, render_template
 from database_function import DBManager
 from worker import add
+import al_db
+import models_db
+from sqlalchemy import select
 
 app = Flask(__name__)
 
 
 @app.route("/", methods=['GET', 'POST'])
 def login_user():
+    if request.method == 'GET':
+        conn = al_db.engine.connect()
+        res_1 = select([models_db.User])
+        result = conn.execute(res_1)
+        data_res = result.fetchall()
+        print(result)
+        pass
+    else:
+        pass
     return "OK"
 
 
