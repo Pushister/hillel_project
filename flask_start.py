@@ -1,7 +1,7 @@
 from flask import Flask
 from flask import request, render_template
 from database_function import DBManager
-from worker import add
+from worker import get_bank_data_task
 import al_db
 import models_db
 from sqlalchemy import select
@@ -30,7 +30,7 @@ def login_user():
 
 @app.route("/logout", methods=['GET'])
 def logout():
-    add.apply_async(args=(1, 2))
+    get_bank_data_task()
     return "Logout"
 
 
