@@ -39,4 +39,3 @@ def generate_data():
             query = f'INSERT INTO currency(bank, currency, date_exchange, buy_rate, sale_rate)' \
                     f'VALUES ("{bank}","{currency}","{date_exchange}",{buy_rate},{sale_rate})'
             db.write_data(query)
-

@@ -18,5 +18,5 @@ class User(Base):
         self.buy_rate = buy_rate
         self.sale_rate = sale_rate
 
-    def __repr__(self):
-        return f'<User {self.name!r}>'
+    # def __repr__(self):
+    #     return f'<User {self.name!r}>'

@@ -9,8 +9,13 @@ services:
     command: python3 flask_start.py
     environment:
       - RABBIT_HOST=rabbitmq_container
+      - DB_HOST=pg_db_container
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+    platform: linux/amd64
 
   rabbitmq_container:
+    #platform: linux/amd64
     image: "rabbitmq:3.8.9-management"
     ports:
       - "5672:5672"
@@ -18,19 +23,33 @@ services:
     hostname: rabbitmq_container
 
   celery:
+    platform: linux/amd64
     build: .
     command: celery -A worker worker --loglevel info --pool=solo
     depends_on:
         - rabbitmq_container
     environment:
       - RABBIT_HOST=rabbitmq_container
+      - DB_HOST=pg_db_container
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
 
-  celery_periodical:
-    build: .
-    command: celery -A worker beat --loglevel info
-    depends_on:
-      - rabbitmq_container
+#  celery_periodical:
+#    build: .
+#    command: celery -A worker beat --loglevel info
+#    depends_on:
+#     - rabbitmq_container
+#    environment:
+#      - RABBIT_HOST=rabbitmq_container
+
+  db:
+    #platform: linux/amd64
+    image: postgres:14.1-alpine
     environment:
-      - RABBIT_HOST=rabbitmq_container
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - '5432:5432'
+    hostname: pg_db_container
 
-#docker-compose up -d
+#docker-compose up -d --build --force-recreate
