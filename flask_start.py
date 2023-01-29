@@ -36,7 +36,23 @@ def logout():
 
 @app.route("/register", methods=['GET', 'POST'])
 def register():
-    return "OK"
+
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['psw']
+        email = request.form['email']
+
+        with Session(al_db.engine) as session:
+            record = models_db.UserName(username=username,
+                                        password=password,
+                                        email=email
+                                        )
+            session.add(record)
+            session.commit()
+
+        return "Thank you"
+
+    return render_template('registr_form.html')
 
 
 @app.route("/user_page", methods=['GET'])
@@ -54,10 +70,13 @@ def currency_converter():
         user_currency_2 = request.form['currency_2']
 
         with Session(al_db.engine) as session:
-            statement_1 = select(models_db.User).filter_by(bank=user_bank, currency=user_currency_1,
+            statement_1 = select(models_db.User).filter_by(bank=user_bank,
+                                                           currency=user_currency_1,
                                                            date_exchange=user_date)
             currency_1 = session.scalars(statement_1).first()
-            statement_2 = select(models_db.User).filter_by(bank=user_bank, currency=user_currency_2,
+
+            statement_2 = select(models_db.User).filter_by(bank=user_bank,
+                                                           currency=user_currency_2,
                                                            date_exchange=user_date)
             currency_2 = session.scalars(statement_2).first()
 
